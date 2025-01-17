@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "ESNext", // For module-based projects
+    "target": "ESNext", // JavaScript version target
+    "declaration": true, // Enable declaration file generation (.d.ts)
+    "declarationDir": "./dist", // Output directory for declaration files
+    "outDir": "./dist", // Output directory for compiled JS files
+    "strict": false, // Enable strict type checking
+    "esModuleInterop": true, // Allow compatibility between CJS and ES modules
+    "moduleResolution": "Node", // Resolve modules using Node-style resolution
+    "allowJs": true, // Allow JavaScript files to be compiled
+    "checkJs": true // Enable type checking in JavaScript files
+  },
+  "include": ["src/**/*"] // Include all your source files
+}

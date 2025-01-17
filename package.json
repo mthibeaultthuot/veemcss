@@ -1,0 +1,41 @@
+{
+  "name": "veem-css",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "description": "",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7"
+  },
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "declaration": true,
+    "declarationDir": "./dist",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Node"
+  },
+  "workspaces": [
+    "packages/@veemcss-vite-svelte-plugin",
+    "@veemcss-test",
+    "packages/veemcss-test",
+    "packages/@veemcss-test",
+    "packages/@veemcss/veemcss-test"
+  ]
+}
