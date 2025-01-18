@@ -1,5 +1,5 @@
 {
-  "name": "veemcss-vite-svelte-plugin",
+  "name": "@veemcss/vite-plugin",
   "version": "1.0.0",
   "devDependencies": {},
   "license": "MIT",
