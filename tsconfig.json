@@ -11,5 +11,5 @@
     "allowJs": true, // Allow JavaScript files to be compiled
     "checkJs": true // Enable type checking in JavaScript files
   },
-  "include": ["src/**/*"] // Include all your source files
+  "include": ["packages/vite-plugin/src/**/*"] // Include all your source files
 }

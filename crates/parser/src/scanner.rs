@@ -11,7 +11,7 @@ struct ScannerOutput {
 }
 
 #[derive(Debug)]
-#[napi]
+#[napi(object)]
 pub struct ClasseInfo {
   pub breakpoint: Option<String>,
   pub classe_name: Option<String>,
