@@ -1,6 +1,6 @@
 import { skipSvelteClass } from "./utils/skip.js";
-import {sum} from "@veemcss/parser"
-import { Scanner } from "@veemcss/parser";
+import { sum } from "@veemcss/parser";
+import { Scanner, Parser } from "@veemcss/parser";
 
 const REGEX = {
   // group 1 : list class
@@ -19,9 +19,9 @@ const BREAKPOINTS = {
 };
 
 interface ClassInfo {
-  breakpoint : string,
-  className : string,
-  size : string,
+  breakpoint: string;
+  className: string;
+  size: string;
 }
 
 class VeemCSSPluginCore {
@@ -59,7 +59,7 @@ class VeemCSSPluginCore {
         className,
         size,
       });
-      console.warn(`new class fffff : {  ${sum(1,32)} }`);
+      console.warn(`new class fffff : {  ${sum(1, 32)} }`);
     });
   }
 
@@ -136,11 +136,12 @@ export function VeemCSSPlugin() {
       if (!id.endsWith(".svelte")) return;
       let scanner = new Scanner(code);
       let output = scanner.scan();
-      output.forEach((info) => {
-        console.log(`${info.breakpoint}, ${info.classeName}, ${info.size}`);
-      });
-
-    }
+      let parser = new Parser(output);
+      parser.parse();
+      //output.forEach((info) => {
+      //console.log(`${info.breakpoint}, ${info.classeName}, ${info.size}`);
+      //});
+    },
   };
 }
 

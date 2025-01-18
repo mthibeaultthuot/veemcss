@@ -1,4 +1,3 @@
-use crate::rules::get_rules;
 use regex::Regex;
 
 #[napi]
