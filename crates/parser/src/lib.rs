@@ -1,7 +1,10 @@
 #![deny(clippy::all)]
 
+mod models;
 mod parser;
+mod rules;
 mod scanner;
+mod tokenizer;
 mod writter;
 
 #[macro_use]
