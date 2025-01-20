@@ -2,7 +2,7 @@
 
 mod models;
 mod parser;
-mod rules;
+pub mod properties;
 mod scanner;
 mod tokenizer;
 mod writter;

@@ -5,11 +5,6 @@ struct Scanner {
   code: String,
 }
 
-#[napi]
-struct ScannerOutput {
-  css_class: Vec<String>,
-}
-
 #[derive(Debug)]
 #[napi(object)]
 pub struct ClasseInfo {
@@ -43,9 +38,7 @@ impl Scanner {
     let mut results = Vec::new();
 
     for curr_classe in &classes {
-      let mut matched = false;
       for cap in re.captures_iter(curr_classe) {
-        matched = true;
         let breakpoint = cap.get(1).map_or(None, |m| Some(m.as_str().to_string()));
         let classe_name = cap.get(2).map_or(None, |m| Some(m.as_str().to_string()));
         let size = cap.get(3).map_or(None, |m| Some(m.as_str().to_string()));

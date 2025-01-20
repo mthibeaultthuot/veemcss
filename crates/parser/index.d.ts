@@ -11,11 +11,10 @@ export interface ClasseInfo {
 export declare function sum(a: number, b: number): number
 export declare class Parser {
   constructor(classesInfo: Array<ClasseInfo>)
-  parse(): void
+  parse(): string
 }
 export declare class Scanner {
   constructor(code: string)
   scan(): Array<ClasseInfo>
   findClass(classes: Array<string>): Array<ClasseInfo>
 }
-export declare class ScannerOutput { }

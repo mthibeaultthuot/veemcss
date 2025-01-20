@@ -1,4 +1,4 @@
-use crate::rules::get_rule;
+use crate::properties::Properties;
 use crate::scanner::ClasseInfo;
 
 #[napi]
@@ -14,11 +14,32 @@ impl Parser {
   }
 
   #[napi]
-  pub fn parse(&self) {
+  pub fn parse(&self) -> napi::Result<String> {
+    let mut code = String::new();
     for curr_classe in &self.classes_info {
       let token = &curr_classe.classe_name.clone().unwrap();
-      let result = get_rule(token);
-      println!("{:?}", result);
+      let propertie = Properties::parse(token.as_str());
+      match propertie {
+        Some(value) => {
+          let css_string = match value.to_css() {
+            Some(css_value) => css_value,
+            None => break,
+          };
+          let css = format!(
+            ".{}-\\[{}\\] {{
+                    {} : {}
+                }}
+                ",
+            token,
+            curr_classe.size.clone().unwrap(),
+            css_string,
+            curr_classe.size.clone().unwrap()
+          );
+          code.push_str(css.as_str());
+        }
+        None => {}
+      }
     }
+    return Ok(code);
   }
 }

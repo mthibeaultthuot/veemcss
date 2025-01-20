@@ -126,21 +126,23 @@ class VeemCSSPluginCore {
 }
 
 export function VeemCSSPlugin() {
-  //let scanner = new Scanner();
-  //const plugin = new VeemCSSPluginCore();
-  //return plugin.createVitePlugin();
+  let generatedCSS = "";
   return {
     name: "vite-plugin-atomic-css",
     transform: (code, id) => {
       if (id.includes("node_modules")) return;
-      if (!id.endsWith(".svelte")) return;
-      let scanner = new Scanner(code);
-      let output = scanner.scan();
-      let parser = new Parser(output);
-      parser.parse();
-      //output.forEach((info) => {
-      //console.log(`${info.breakpoint}, ${info.classeName}, ${info.size}`);
-      //});
+      if (id.endsWith(".svelte")) {
+        let scanner = new Scanner(code);
+        let output = scanner.scan();
+        let parser = new Parser(output);
+        generatedCSS = parser.parse();
+      } else if (id.endsWith("+page.svelte?svelte&type=style&lang.css")) {
+        console.log(generatedCSS);
+        return {
+          code: `${generatedCSS}\n${code}`,
+          map: null,
+        };
+      }
     },
   };
 }
