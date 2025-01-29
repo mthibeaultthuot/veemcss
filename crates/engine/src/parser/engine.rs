@@ -6,7 +6,7 @@ pub struct Engine {}
 #[napi]
 impl Engine {
   pub fn from_string(code: &str) -> Result<(), std::fmt::Error> {
-    let scanner = Scanner::new(code.to_string());
+    //let scanner = Scanner::new(code.to_string());
     //let classes = scanner.scan().unwrap();
     //let filtered_classes = Engine::filter_classes(classes.clone());
     //println!("{:?}", filtered_classes);
