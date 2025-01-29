@@ -6,13 +6,11 @@ pub struct Engine {}
 #[napi]
 impl Engine {
   pub fn from_string(code: &str) -> Result<(), std::fmt::Error> {
-    //let scanner = Scanner::new(code.to_string());
-    //let classes = scanner.scan().unwrap();
-    //let filtered_classes = Engine::filter_classes(classes.clone());
-    //println!("{:?}", filtered_classes);
-    //for classe in classes {
-    //  let lexer = Lexer::lex(classe.as_str());
-    //}
+    let classes = Scanner::scan(code).unwrap();
+    let filtered_classes = Engine::filter_classes(classes.clone());
+    for classe in classes {
+      let lexer = Lexer::lex(classe);
+    }
     Ok(())
   }
 
