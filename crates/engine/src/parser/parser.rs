@@ -26,17 +26,17 @@ impl<'a> Parser<'a> {
 
   pub fn parse(&mut self) -> Result<Vec<TokenKind<'a>>, std::fmt::Error> {
     let mut token_tree = Vec::new();
-    while !self.is_finish() {
+    while self.is_not_finish() {
       if let Some(result) = self.parse_next_iteration() {
         token_tree.push(result);
-        self.curr += 1;
       };
+      self.curr += 1;
     }
     Ok(token_tree)
   }
 
-  pub fn is_finish(&self) -> bool {
-    self.curr >= self.classes.len() - 1
+  pub fn is_not_finish(&self) -> bool {
+    self.curr < self.classes.len()
   }
 
   pub fn parse_next_iteration(&self) -> Option<TokenKind<'a>> {
@@ -57,7 +57,18 @@ impl<'a> Parser<'a> {
           None => None,
         }
       }
-      Some(Token::ClassName(_s)) => None,
+      Some(Token::ClassName(class_name)) => {
+        let mut metadata = None;
+        if let Some(Token::Metadata(m)) = eval_iter.next() {
+          metadata = Some(m);
+        }
+        let class = TokenKind::ClassName {
+          class_name,
+          metadata,
+        };
+        println!("{:?}", class);
+        Some(class)
+      }
       Some(Token::Metadata(_metdata)) => None,
       None => None,
     };
@@ -92,7 +103,7 @@ mod tests {
 
   #[test]
   fn parse() {
-    let code = r#"<div class="md:w-[100px] md:bg-[#333]"></div>"#;
+    let code = r#"<div class=" bg-[#111] md:w-[100px] md:bg-[#333] bg-[#111]"></div>"#;
     let mut parser = Parser::new(code);
     let parse_result = parser.parse().unwrap();
     println!("{:?}", parse_result);
