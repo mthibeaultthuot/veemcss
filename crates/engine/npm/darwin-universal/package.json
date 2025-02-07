@@ -1,0 +1,15 @@
+{
+  "name": "@veemcss/parser-darwin-universal",
+  "version": "0.0.0",
+  "os": [
+    "darwin"
+  ],
+  "main": "parser.darwin-universal.node",
+  "files": [
+    "parser.darwin-universal.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  }
+}

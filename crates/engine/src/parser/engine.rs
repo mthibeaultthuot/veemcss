@@ -1,20 +1,20 @@
-use crate::parser::lexer::Lexer;
-use crate::scanner::scanner::Scanner;
+use crate::parser::parser::Parser;
 
 #[napi]
 pub struct Engine {}
 #[napi]
 impl Engine {
   pub fn from_string(code: &str) -> Result<(), std::fmt::Error> {
-    let classes = Scanner::scan(code).unwrap();
-    let filtered_classes = Engine::filter_classes(classes.clone());
-    for classe in classes {
-      let lexer = Lexer::lex(classe);
-    }
+    let mut parser = Parser::new(code);
+
+    // read only
+    let _tree_result = parser.parse().unwrap();
+
+    // call generation from tree read only
     Ok(())
   }
 
-  pub fn filter_classes(mut classes: Vec<&str>) -> Result<Vec<&str>, std::fmt::Error> {
+  pub fn filter_classes(classes: Vec<&str>) -> Result<Vec<&str>, std::fmt::Error> {
     let mut filtered_classes = Vec::new();
     let breakpoints = vec!["sm", "md", "lg", "xl", "2xl"];
     let mut i = 0;
@@ -31,7 +31,7 @@ impl Engine {
         .collect::<Vec<_>>();
       filtered_classes.append(&mut find_classes);
 
-      i = i + 1;
+      i += 1;
     }
 
     let remaining_classes: Vec<&str> = classes
@@ -51,8 +51,14 @@ mod tests {
   use super::*;
 
   #[test]
-  fn test_filter_class() {
-    let classes = vec!["bg-[#000]",  "md:bg-[#333]", "md:w-[100px]", "sm:bg-[#222]"];
+  fn from_string() {
+    let code = r#"<div class="md:w-[100px] bg-[#111]"></div>"#;
+    Engine::from_string(code).unwrap();
+  }
+
+  #[test]
+  fn filter_class() {
+    let classes = vec!["bg-[#000]", "md:bg-[#333]", "md:w-[100px]", "sm:bg-[#222]"];
     let filtered_classes = Engine::filter_classes(classes).unwrap();
     assert_eq!("sm:bg-[#222]", filtered_classes[0]);
     assert_eq!("md:bg-[#333]", filtered_classes[1]);
