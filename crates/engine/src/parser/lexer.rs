@@ -1,3 +1,4 @@
+use crate::parser::engine::EngineError;
 use logos::Logos;
 
 #[derive(Logos, Debug, PartialEq, Clone)]
@@ -13,12 +14,10 @@ pub enum Token<'a> {
   Metadata(&'a str),
 }
 
-pub struct Lexer<'a> {
-  data: &'a str,
-}
+pub struct Lexer();
 
-impl<'a> Lexer<'a> {
-  pub fn lex(data: &'a str) -> Result<Vec<Token>, std::fmt::Error> {
+impl Lexer {
+  pub fn lex(data: &str) -> Result<Vec<Token>, EngineError> {
     let mut output = Vec::new();
     let mut lex = Token::lexer(data);
     for token in lex.by_ref() {
@@ -26,7 +25,7 @@ impl<'a> Lexer<'a> {
         Ok(Token::Breakpoint(ref s)) => output.push(Token::Breakpoint(s)),
         Ok(Token::ClassName(ref s)) => output.push(Token::ClassName(s)),
         Ok(Token::Metadata(ref s)) => output.push(Token::Metadata(s)),
-        Err(_err) => panic!("Lexer failed : Invalid class name"),
+        Err(_e) => return Err(EngineError::LexerNotFound),
       }
     }
     Ok(output)

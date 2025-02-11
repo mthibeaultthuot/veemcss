@@ -5,8 +5,4 @@ use logos::Logos;
 pub enum Background<'a> {
   #[token("bg", |_| "background")]
   Background(&'a str),
-  #[token("bgc", |_| "background-color")]
-  BackgroundColor(&'a str),
-  #[token("bgi", |_| "background-image")]
-  BackgroundImage(&'a str),
 }

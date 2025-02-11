@@ -1,5 +1,8 @@
+use crate::parser::engine::EngineError;
 use crate::parser::lexer::{Lexer, Token};
-use crate::scanner::scanner::Scanner;
+use crate::properties::Properties;
+use core::fmt;
+use std::fmt::format;
 
 #[derive(Debug, Clone)]
 pub enum TokenKind<'a> {
@@ -13,18 +16,57 @@ pub enum TokenKind<'a> {
   },
 }
 
+impl<'a> fmt::Display for TokenKind<'a> {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    match self {
+      TokenKind::BreakpointQuery {
+        breakpoint,
+        children,
+      } => {
+        if let TokenKind::ClassName {
+          class_name,
+          metadata,
+        } = *children.clone()
+        {
+          let properties = Properties::parse(class_name).ok_or(fmt::Error)?;
+          let metadata = metadata.ok_or(fmt::Error)?;
+          let base_class_name = format!(".{}\\:{}-\\[{}\\]", breakpoint, class_name, metadata);
+          return write!(
+            f,
+            "@media only screen and (max-width: {}) {{ \n {}  {{ \n \t{} : {}; \n }} \n}}\n",
+            String::from("1000px"),
+            base_class_name,
+            properties.to_css().unwrap(),
+            metadata
+          );
+        }
+        write!(f, "@media ({}) {{ {} }}", breakpoint, children)
+      }
+      TokenKind::ClassName {
+        class_name,
+        metadata,
+      } => {
+        if let Some(metadata) = metadata {
+          write!(f, ".{} /* {} */", class_name, metadata)
+        } else {
+          write!(f, ".{}", class_name)
+        }
+      }
+    }
+  }
+}
+
 pub struct Parser<'a> {
   classes: Vec<&'a str>,
   curr: usize,
 }
 
 impl<'a> Parser<'a> {
-  pub fn new(code: &'a str) -> Self {
-    let classes = Scanner::scan(code).unwrap();
+  pub fn new(classes: Vec<&'a str>) -> Self {
     Self { classes, curr: 0 }
   }
 
-  pub fn parse(&mut self) -> Result<Vec<TokenKind<'a>>, std::fmt::Error> {
+  pub fn parse(&mut self) -> Result<Vec<TokenKind<'a>>, EngineError> {
     let mut token_tree = Vec::new();
     while self.is_not_finish() {
       if let Some(result) = self.parse_next_iteration() {
@@ -66,7 +108,6 @@ impl<'a> Parser<'a> {
           class_name,
           metadata,
         };
-        println!("{:?}", class);
         Some(class)
       }
       Some(Token::Metadata(_metdata)) => None,
@@ -94,18 +135,5 @@ impl<'a> Parser<'a> {
       });
     };
     None
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[test]
-  fn parse() {
-    let code = r#"<div class=" bg-[#111] md:w-[100px] md:bg-[#333] bg-[#111]"></div>"#;
-    let mut parser = Parser::new(code);
-    let parse_result = parser.parse().unwrap();
-    println!("{:?}", parse_result);
   }
 }

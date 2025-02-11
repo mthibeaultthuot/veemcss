@@ -310,7 +310,6 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Parser, Scanner } = nativeBinding
+const { Engine } = nativeBinding
 
-module.exports.Parser = Parser
-module.exports.Scanner = Scanner
+module.exports.Engine = Engine
