@@ -1,5 +1,6 @@
-use crate::parser::engine::EngineError;
+use crate::{parser::engine::EngineError, rules::breakpoint::BreakpointRule};
 use logos::Logos;
+use napi::threadsafe_function::ErrorStrategy::T;
 
 #[derive(Logos, Debug, PartialEq, Clone)]
 #[logos(skip r"[ \t\n\f]+")]
@@ -29,6 +30,22 @@ impl Lexer {
       }
     }
     Ok(output)
+  }
+
+  pub fn lex_breakpoint(data: &str) -> Result<&str, EngineError> {
+    let mut lex = BreakpointRule::lexer(data);
+    let mut result: &str = "";
+    for token in lex.by_ref() {
+      result = match token {
+        Ok(BreakpointRule::Small(s)) => s,
+        Ok(BreakpointRule::Medium(s)) => s,
+        Ok(BreakpointRule::Large(s)) => s,
+        Ok(BreakpointRule::XLarge(s)) => s,
+        Ok(BreakpointRule::XXLarge(s)) => s,
+        Err(_e) => return Err(EngineError::LexerNotFound),
+      }
+    }
+    Ok(result)
   }
 }
 

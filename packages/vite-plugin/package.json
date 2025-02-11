@@ -13,6 +13,6 @@
   "author": "",
   "description": "",
   "dependencies": {
-    "@veemcss/parser": "../../crates/parser"
+    "@veemcss/engine": "../../crates/engine"
   }
 }

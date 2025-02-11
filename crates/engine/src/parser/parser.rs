@@ -1,6 +1,7 @@
 use crate::parser::engine::EngineError;
 use crate::parser::lexer::{Lexer, Token};
 use crate::properties::Properties;
+use crate::rules::breakpoint;
 use core::fmt;
 use std::fmt::format;
 
@@ -28,16 +29,17 @@ impl<'a> fmt::Display for TokenKind<'a> {
           metadata,
         } = *children.clone()
         {
-          let properties = Properties::parse(class_name).ok_or(fmt::Error)?;
+          let properties = Properties::parse(class_name)
+            .ok_or(fmt::Error)?
+            .to_css()
+            .ok_or(fmt::Error)?;
           let metadata = metadata.ok_or(fmt::Error)?;
           let base_class_name = format!(".{}\\:{}-\\[{}\\]", breakpoint, class_name, metadata);
+          let new_breakpoint = Lexer::lex_breakpoint(breakpoint).unwrap();
           return write!(
             f,
             "@media only screen and (max-width: {}) {{ \n {}  {{ \n \t{} : {}; \n }} \n}}\n",
-            String::from("1000px"),
-            base_class_name,
-            properties.to_css().unwrap(),
-            metadata
+            new_breakpoint, base_class_name, properties, metadata
           );
         }
         write!(f, "@media ({}) {{ {} }}", breakpoint, children)
